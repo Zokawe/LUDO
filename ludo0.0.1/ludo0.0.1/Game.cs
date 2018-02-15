@@ -6,25 +6,20 @@ class Game
 
     private int playerCount;
     public Player[] players;
+    private LineMethods lm = new LineMethods();
     private int i;
+    //private int maxPlayers=4;
+    //private int minPlayers=2;
     private int playerOrder = 0;
-    private bool gameInProgress = false;
+
+    private bool gameInProgress;
 
     public void GameRun()
     {
         var gameState = 0;
 
-        Console.Write("Choose number of players: ");
-        int.TryParse(Console.ReadLine(), out playerCount);
+        InitializePlayers();
 
-        players = new Player[playerCount];
-
-        for (i = 0; i <playerCount; i++)
-            {
-                players[i] = new Player(i+1);
-                Console.WriteLine("Player "+players[i].GetId()+" has joined the game.");
-
-            }
         Console.WriteLine();
         gameInProgress = true;
         GameRunning();
@@ -33,21 +28,45 @@ class Game
 
 
         
+    }
 
-        //string[] lines = System.IO.File.ReadAllLines(@"C:\Users\JSL\Desktop\ludo.txt");
+    public void InitializePlayers()
+    {
+        bool cnvSuccess = false;
 
-        //// Display the file contents by using a foreach loop.
+        while (cnvSuccess == false)
+        {
+            Console.Clear();
+            Console.Write("Choose number of players: ");
+            string input = Console.ReadLine();
+            cnvSuccess = lm.InputCheck(input);
+            int.TryParse(input, out playerCount);
+            lm.BreakLine();
+            players = new Player[playerCount];
 
-        //foreach (string line in lines)
-        //{
-        //    // Use a tab to indent each line of the file.
-        //    Console.WriteLine(line);
-        //}
+            for (i = 0; i < playerCount; i++)
+            {
+                Piece[] pcs = InitializePieces();
+                players[i] = new Player(i + 1, pcs);
+                Console.WriteLine("Player " + players[i].GetId() + " has joined the game.");
 
+            }
+        }
+        lm.BreakLine();
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadKey();
 
-        //string lineRead = Console.ReadLine();
+        
+    }
 
-
+    private Piece[] InitializePieces()
+    {
+        Piece[] pieces = new Piece[4];
+        for (int i = 0; i <= 3; i++)
+        {
+            pieces[i] = new Piece(i+1);
+        }
+        return pieces;
     }
 
     public void GameRunning()
@@ -58,15 +77,16 @@ class Game
                 {
                     playerOrder = 0;
                 }
-                else if (players[playerOrder].GetPlayerState()==2)
+                else if (players[playerOrder].PlayerInGoal(players[playerOrder].GetPieces())==true)
                 {
-                    Console.WriteLine("Player "+players[playerOrder].GetId()+" has won!");
+                    Console.Clear();
+                    Console.WriteLine("Player#"+players[playerOrder].GetId()+" has won!");
                     Console.ReadKey();  
                     gameInProgress = false;
                 }
                 else
                 {
-                    players[playerOrder].Move();
+                    players[playerOrder].TakeAction();
                     playerOrder++;
                 }
             
