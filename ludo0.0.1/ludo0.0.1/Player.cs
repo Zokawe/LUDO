@@ -1,20 +1,21 @@
 ﻿using System;
 public enum PlayerPos { Spawn, Moving, Safe, Goal };
 
+//class for spillere
 class Player
 {
     //add interface for map/board properties; state, maplength, dist to goal etc.
 
     //initialization of variables & constants
     private PlayerPos pos = PlayerPos.Spawn;
-    private const int mapLength = 56;
-    private int distToGoal;
     private int dRoll;
     private int playerId;
+    private int distToGoal;
+    private const int mapLength = 56;
     //private int spawnDist = 13;
     //private int offset = 0;
 
-        //initialization of objects used in class
+    //initialization of objects used in class
     public Piece[] pieces;
     Dice plDice = new Dice();
     LineMethods lm = new LineMethods();
@@ -39,7 +40,7 @@ class Player
         PieceInfo(GetPieces());
     }
 
-    //
+    //styre valg af ludobrik. Holder brugeren fanget såfremt at svaret ikke er en integer eller er uden for 'brikrange'
     public void PieceChoice(int dRoll)
     {
         bool cnvSuccess = false;
@@ -49,11 +50,12 @@ class Player
 
         while (cnvSuccess == false)
         {
+            //inputcheck er en metode i LineMethods til at returnere converteret input i en bool
             string input = Console.ReadLine();
             cnvSuccess = lm.InputCheck(input);
 
             int.TryParse(input, out int piecePick);
-
+            //tjekker at valget er inden for range og at brikken ikke er i mål
             if (piecePick <= 4 && piecePick > 0 &&pieces[piecePick-1].pos!=PiecePos.Goal)
             {
                 pieces[piecePick - 1].Move(dRoll);
@@ -64,9 +66,10 @@ class Player
             }
         }
     }
-    //
+    //bruges til at udskrive informationer om brikplacering og muligheder deraf.
     public void PieceInfo(Piece[] pieces)
     {
+        //q tillader spillere, der ikke har nogen brikker på banen at slå 3 gange, såfremt de ikke slår en sekser.
         for (int q = 3; q > 0; q--)
         {
             dRoll = plDice.GetThrow();
@@ -74,6 +77,7 @@ class Player
             lm.BreakLine();
             Console.WriteLine("Player #" + playerId + " rolled a " + dRoll + "!");
             lm.BreakLine();
+            //foreach loop til at tjekke alle en spillers brikker
             foreach (Piece p in pieces)
             {
                 Console.Write("Piece #" + p.GetId() + " Location: " + p.GetPos());
@@ -129,12 +133,13 @@ class Player
         }
     }
 
-
+    //bruges til at udregne/finde ud af om en spiller har alle brikker i mål/har vundet
     public bool PlayerInGoal(Piece[] pieces)
     {
         bool playerInGoal =true;
         foreach (Piece p in this.pieces)
         {
+            //hvis brikken ikke er i mål, så er værdien false.
             if (p.GetPos()!=PiecePos.Goal)
             {
                 playerInGoal = false;
