@@ -12,6 +12,7 @@ namespace ludo0._0._1
         static void Main(string[] args)
         {
             Game ludo = new Game();
+            //starter spillet
             ludo.GameRun();
         }
     }
