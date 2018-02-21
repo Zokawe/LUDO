@@ -37,10 +37,12 @@ class Player
                     break;
                 case 2:
                     Console.WriteLine("Goal reached");
+                    Console.ReadKey();
+                    Environment.Exit(0);
                     break;
             }
             Console.ReadKey();
-            
+
 
         }
     }

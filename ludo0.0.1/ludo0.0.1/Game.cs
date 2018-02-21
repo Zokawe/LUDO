@@ -8,6 +8,9 @@ class Game
     {
         var gameState = 0;
 
+        Console.WriteLine("Welcome to the Ludo. \nYou have 1 token to move.");
+        Console.ReadLine();
+
         Player p1 =new Player();
         p1.Move();
 
